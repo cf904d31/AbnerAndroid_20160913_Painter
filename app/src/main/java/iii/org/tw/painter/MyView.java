@@ -41,13 +41,17 @@ public class MyView extends View {
         screenH = getHeight();
         Log.d("Abner","Width=" + screenW + "\t Height=" + screenH);
         //-----隨著螢幕大小而來改變圖片的縮放率
-        bmpBall = BitmapFactory.decodeResource(res,R.drawable.pokemon);
-        float ballW = screenW/2f , ballH = ballW;
+        bmpBall = BitmapFactory.decodeResource(res,R.drawable.ball);
+        float ballW = screenW/8f , ballH = ballW;
         Matrix matrix = new Matrix();
         matrix.postScale(ballW/bmpBall.getWidth(),ballH/bmpBall.getHeight());
         bmpBall = Bitmap.createBitmap(bmpBall,0,0,bmpBall.getWidth(),bmpBall.getHeight(),matrix,false);
         isset = true;
     }
+
+//    private Bitmap resizeBitmap (Bitmap src , float newW , float newH) {
+//
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {

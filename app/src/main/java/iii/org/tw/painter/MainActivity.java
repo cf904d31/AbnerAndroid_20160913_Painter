@@ -22,5 +22,9 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-
+//    @Override
+//    public void finish() {
+//        myView.getTimer().cancel();
+//        super.finish();
+//    }
 }
