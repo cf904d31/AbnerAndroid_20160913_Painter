@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -30,6 +31,7 @@ public class MyView extends View {
     private Matrix matrix;
     private Timer timer;
     private float ballX, ballY, ballW, ballH, dx, dy;
+    private GestureDetector gd;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,8 +40,24 @@ public class MyView extends View {
         matrix = new Matrix();
         timer = new Timer();
 
+        gd = new GestureDetector(context,new MyGDListener());
+
         //setOnClickListener(new myClickListener());
 
+    }
+
+    private class MyGDListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d("Abner", "onFling:" + velocityX + "x" + velocityY);
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d("Abner","gdonDown");
+            return true; //super.onDown(e);
+        }
     }
 
     Timer getTimer(){return timer;}
@@ -63,10 +81,10 @@ public class MyView extends View {
         bmpBall = resizeBitmap(bmpBall, ballW,ballH);
 
 
-        dx = dy = 10;
+        dx = dy = 20;
 
-        timer.schedule(new RefreshView(), 0, 40);
-        timer.schedule(new BallTask(), 1000, 100);
+        timer.schedule(new RefreshView(), 0, 50);
+        timer.schedule(new BallTask(), 1000, 50);
 
 
         isset = true;
@@ -144,7 +162,8 @@ public class MyView extends View {
 
 
         //return super.onTouchEvent(event);
-        return true;
+        //return true;
+        return gd.onTouchEvent(event);
     }
 
     private void doTouchDown(float x, float y) {
