@@ -15,6 +15,8 @@ import android.view.View;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by user on 2016/9/13.
@@ -26,16 +28,21 @@ public class MyView extends View {
     private int screenW , screenH;
     private Bitmap bmpBall , bmpBG;
     private Matrix matrix;
+    private Timer timer;
+    private float ballX, ballY, ballW, ballH, dx, dy;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
         lines = new LinkedList<>();
         res = context.getResources();
         matrix = new Matrix();
+        timer = new Timer();
 
         //setOnClickListener(new myClickListener());
 
     }
+
+    Timer getTimer(){return timer;}
 
     private void init() {
 
@@ -43,7 +50,8 @@ public class MyView extends View {
         screenH = getHeight();
         Log.d("Abner","Width=" + screenW + "\t Height=" + screenH);
         //-----隨著螢幕大小而來改變圖片的縮放率
-        float ballW = screenW/8f , ballH = ballW;
+        ballW = screenW/8f;
+        ballH = ballW;
 
 
 
@@ -53,7 +61,12 @@ public class MyView extends View {
 
         bmpBall = BitmapFactory.decodeResource(res, R.drawable.ball);
         bmpBall = resizeBitmap(bmpBall, ballW,ballH);
-        //
+
+
+        dx = dy = 10;
+
+        timer.schedule(new RefreshView(), 0, 40);
+        timer.schedule(new BallTask(), 1000, 100);
 
 
         isset = true;
@@ -76,7 +89,7 @@ public class MyView extends View {
 
         canvas.drawBitmap(bmpBG,0,0,null);
 
-        canvas.drawBitmap(bmpBall,0,0,null);
+        canvas.drawBitmap(bmpBall,ballX,ballY,null);
 
 
         Paint p = new Paint();
@@ -93,6 +106,22 @@ public class MyView extends View {
             }
         }
         //canvas.drawLine(0,0,100,100,p);
+    }
+
+    private class RefreshView extends TimerTask {
+        @Override
+        public void run() {
+            //invalidate();
+            postInvalidate();
+        }
+    }
+    private class BallTask extends TimerTask {
+        @Override
+        public void run() {
+            if (ballX<0 || ballX + ballW > screenW) dx *= -1;
+            if (ballY<0 || ballY + ballH > screenH) dy *= -1;
+            ballX += dx; ballY += dy;
+        }
     }
 
 //    private class myClickListener implements View.OnClickListener {
