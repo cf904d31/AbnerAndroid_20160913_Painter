@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,6 +22,9 @@ import java.util.LinkedList;
 public class MyView extends View {
     private LinkedList<LinkedList<HashMap<String,Float>>> lines;
     private Resources res;
+    private boolean isset;
+    private int screenW , screenH;
+    private Bitmap bmpBall;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,14 +34,33 @@ public class MyView extends View {
         //setOnClickListener(new myClickListener());
 
     }
+
+    private void init() {
+
+        screenW = getWidth();
+        screenH = getHeight();
+        Log.d("Abner","Width=" + screenW + "\t Height=" + screenH);
+        //-----隨著螢幕大小而來改變圖片的縮放率
+        bmpBall = BitmapFactory.decodeResource(res,R.drawable.pokemon);
+        float ballW = screenW/2f , ballH = ballW;
+        Matrix matrix = new Matrix();
+        matrix.postScale(ballW/bmpBall.getWidth(),ballH/bmpBall.getHeight());
+        bmpBall = Bitmap.createBitmap(bmpBall,0,0,bmpBall.getWidth(),bmpBall.getHeight(),matrix,false);
+        isset = true;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if(!isset) {init();}
+
+
         Paint p = new Paint();
         p.setColor(Color.BLUE);
         p.setStrokeWidth(4);
 
-        Bitmap bmpBall = BitmapFactory.decodeResource(res,R.drawable.pokemon);
+
         canvas.drawBitmap(bmpBall,0,0,null);
 
         for (LinkedList<HashMap<String,Float>> line : lines) {
