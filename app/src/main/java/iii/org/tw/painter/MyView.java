@@ -1,6 +1,9 @@
 package iii.org.tw.painter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,9 +20,13 @@ import java.util.LinkedList;
  */
 public class MyView extends View {
     private LinkedList<LinkedList<HashMap<String,Float>>> lines;
+    private Resources res;
+
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
         lines = new LinkedList<>();
+        res = context.getResources();
+
         //setOnClickListener(new myClickListener());
 
     }
@@ -29,6 +36,10 @@ public class MyView extends View {
         Paint p = new Paint();
         p.setColor(Color.BLUE);
         p.setStrokeWidth(4);
+
+        Bitmap bmpBall = BitmapFactory.decodeResource(res,R.drawable.pokemon);
+        canvas.drawBitmap(bmpBall,0,0,null);
+
         for (LinkedList<HashMap<String,Float>> line : lines) {
             for (int i = 1; i < line.size(); i++) {
                 canvas.drawLine(line.get(i - 1).get("x"), line.get(i - 1).get("y"), line.get(i).get("x"), line.get(i).get("y"), p);
