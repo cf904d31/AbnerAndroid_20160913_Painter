@@ -53,6 +53,7 @@ public class MyView extends View {
 
         bmpBall = BitmapFactory.decodeResource(res, R.drawable.ball);
         bmpBall = resizeBitmap(bmpBall, ballW,ballH);
+        //
 
 
         isset = true;
