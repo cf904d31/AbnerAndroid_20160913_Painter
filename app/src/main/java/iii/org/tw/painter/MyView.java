@@ -24,12 +24,14 @@ public class MyView extends View {
     private Resources res;
     private boolean isset;
     private int screenW , screenH;
-    private Bitmap bmpBall;
+    private Bitmap bmpBall , bmpBG;
+    private Matrix matrix;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
         lines = new LinkedList<>();
         res = context.getResources();
+        matrix = new Matrix();
 
         //setOnClickListener(new myClickListener());
 
@@ -41,17 +43,27 @@ public class MyView extends View {
         screenH = getHeight();
         Log.d("Abner","Width=" + screenW + "\t Height=" + screenH);
         //-----隨著螢幕大小而來改變圖片的縮放率
-        bmpBall = BitmapFactory.decodeResource(res,R.drawable.ball);
         float ballW = screenW/8f , ballH = ballW;
-        Matrix matrix = new Matrix();
-        matrix.postScale(ballW/bmpBall.getWidth(),ballH/bmpBall.getHeight());
-        bmpBall = Bitmap.createBitmap(bmpBall,0,0,bmpBall.getWidth(),bmpBall.getHeight(),matrix,false);
+
+
+
+        bmpBG = BitmapFactory.decodeResource(res, R.drawable.bg);
+        bmpBG = resizeBitmap(bmpBG, screenW,screenH);
+
+
+        bmpBall = BitmapFactory.decodeResource(res, R.drawable.ball);
+        bmpBall = resizeBitmap(bmpBall, ballW,ballH);
+
+
         isset = true;
     }
 
-//    private Bitmap resizeBitmap (Bitmap src , float newW , float newH) {
-//
-//    }
+    private Bitmap resizeBitmap (Bitmap src , float newW , float newH) {
+        matrix.reset();
+        matrix.postScale(newW/src.getWidth(),newH/src.getHeight());
+        bmpBall = Bitmap.createBitmap(src,0,0,src.getWidth(),src.getHeight(),matrix, false);
+        return bmpBall;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -60,12 +72,19 @@ public class MyView extends View {
         if(!isset) {init();}
 
 
+
+        canvas.drawBitmap(bmpBG,0,0,null);
+
+        canvas.drawBitmap(bmpBall,0,0,null);
+
+
         Paint p = new Paint();
         p.setColor(Color.BLUE);
         p.setStrokeWidth(4);
 
 
-        canvas.drawBitmap(bmpBall,0,0,null);
+
+
 
         for (LinkedList<HashMap<String,Float>> line : lines) {
             for (int i = 1; i < line.size(); i++) {
